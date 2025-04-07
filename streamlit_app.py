@@ -58,3 +58,25 @@ final_sample = random_sample[(random_sample >= minimum_value) & (random_sample <
 final_sample= final_sample[:nubmer_of_sample_individual].tolist()
 st.subheader('No of Sample: %s:00' %len(final_sample))
 st.subheader ('\nSample Data: %s:00' %final_sample)
+
+from sklearn.linear_model import LogisticRegression, LogisticRegressionCV
+from sklearn.metrics import accuracy_score
+import statsmodels.api as sm
+
+data = {
+    'StudyHours': [1, 2, 3, 4, 5, 6],
+    'ExamScore': [50, 55, 60, 65, 70, 75],
+    'PassedTarget': [0, 0, 1, 1, 1, 1]
+}
+df = pd.DataFrame(data)
+
+X = df[['StudyHours', 'ExamScore']]
+y = df['PassedTarget']
+
+log_reg = LogisticRegression()
+log_reg.fit(X, y)
+
+st.write("Logistic Regression Coefficients:")
+st.write(log_reg.coef_)
+st.write("Intercept:" )
+st.write(log_reg.intercept_)
