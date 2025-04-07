@@ -27,6 +27,22 @@ data_load_state = st.text('Loading data...')
 data = load_data(10000)
 data_load_state.text("Done! (using st.cache_data)")
 
+import pandas as pd
+import numpy as np
+
+#Using random see 42 for reproducibility
+np.random.seed(42)
+mean=170
+standard_deviation=10
+minimum_value=140
+maximum_value=220
+nubmer_of_sample_individual=50
+random_sample = np.random.normal(mean, standard_deviation, nubmer_of_sample_individual)
+final_sample = random_sample[(random_sample >= minimum_value) & (random_sample <= maximum_value)]
+
+final_sample= final_sample[:nubmer_of_sample_individual].tolist()
+print("No of Sample: ",len(final_sample))
+print ("\nSample Data: ",final_sample)
 if st.checkbox('Show raw data'):
     st.subheader('Raw data')
     st.write(data)
