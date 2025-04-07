@@ -1,7 +1,10 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-
+import sklearn
+from sklearn.linear_model import LogisticRegression, LogisticRegressionCV
+from sklearn.metrics import accuracy_score
+import statsmodels.api as sm
 
 st.title("🎈 My new app")
 st.write(
@@ -59,9 +62,7 @@ final_sample= final_sample[:nubmer_of_sample_individual].tolist()
 st.subheader('No of Sample: %s:00' %len(final_sample))
 st.subheader ('\nSample Data: %s:00' %final_sample)
 
-from sklearn.linear_model import LogisticRegression, LogisticRegressionCV
-from sklearn.metrics import accuracy_score
-import statsmodels.api as sm
+
 
 data = {
     'StudyHours': [1, 2, 3, 4, 5, 6],
