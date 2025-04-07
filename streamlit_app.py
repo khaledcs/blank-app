@@ -101,7 +101,7 @@ except KeyError:
 
 st.markdown(some_text)
 
-    sleep(5)
+sleep(5)
 
 if st.button(f"Copy to Clipboard"):
     copy_to_clipboard(some_text)
