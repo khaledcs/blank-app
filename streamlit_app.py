@@ -73,7 +73,7 @@ st.write("The current movie title is", title)
 
 new_student = np.array([[4.5, int(title)]])
 
-if title<>'':
+if title!='':
     pred_standard = log_reg.predict(new_student)
     st.write("\nStandard Logistic Regression Prediction:", "Pass" if pred_standard[0] == 1 else "Fail")
 
