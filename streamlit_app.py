@@ -74,9 +74,10 @@ marks = st.text_input("Enter Marks", )
 
 studytime = st.text_input("Study Time", )
 
-new_student = np.array([[double(studytime), int(marks)]])
+
 
 if marks>0:
+    new_student = np.array([[int(studytime), int(marks)]])
     pred_standard = log_reg.predict(new_student)
     st.write("\nStandard Logistic Regression Prediction:", "Pass" if pred_standard[0] == 1 else "Fail")
 
