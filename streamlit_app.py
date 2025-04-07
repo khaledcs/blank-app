@@ -88,7 +88,7 @@ import pyperclip
 from time import sleep
 
 def copy_to_clipboard(text):
-    pyperclip.copy(text)
+    st.write(text)
     st.info("Text copied to clipboard!")
 
 try:
@@ -100,6 +100,8 @@ except KeyError:
     st.session_state['some_text'] = some_text
 
 st.markdown(some_text)
+
+    sleep(5)
 
 if st.button(f"Copy to Clipboard"):
     copy_to_clipboard(some_text)
