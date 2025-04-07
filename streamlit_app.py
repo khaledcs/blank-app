@@ -82,3 +82,24 @@ st.write("\nStandard Logistic Regression Prediction:", "Pass" if pred_standard[0
 pred_l2 = log_reg_l2.predict(new_student)
 st.write("L2 Regularized Logistic Regression Prediction:", "Pass" if pred_l2[0] == 1 else "Fail")
 
+
+#import streamlit as st
+import pyperclip
+from time import sleep
+
+def copy_to_clipboard(text):
+    pyperclip.copy(text)
+    st.info("Text copied to clipboard!")
+
+try:
+    some_text = st.session_state['some_text']
+except KeyError:
+    st.write("Generating some_text...")
+    sleep(5)
+    some_text = "lorum ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+    st.session_state['some_text'] = some_text
+
+st.markdown(some_text)
+
+if st.button(f"Copy to Clipboard"):
+    copy_to_clipboard(some_text)
