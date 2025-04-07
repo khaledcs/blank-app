@@ -56,5 +56,5 @@ random_sample = np.random.normal(mean, standard_deviation, nubmer_of_sample_indi
 final_sample = random_sample[(random_sample >= minimum_value) & (random_sample <= maximum_value)]
 
 final_sample= final_sample[:nubmer_of_sample_individual].tolist()
-st.subheader("No of Sample: ",len(final_sample))
-st.subheader ("\nSample Data: ",final_sample)
+st.subheader('No of Sample: %s:00' %len(final_sample))
+st.subheader ('\nSample Data: %s:00' %final_sample)
