@@ -29,6 +29,7 @@ data_load_state.text("Done! (using st.cache_data)")
 
 import pandas as pd
 import numpy as np
+st.title('My Dev')
 
 #Using random see 42 for reproducibility
 np.random.seed(42)
