@@ -65,7 +65,7 @@ st.write(log_reg.coef_)
 st.write("Intercept:" )
 st.write(log_reg.intercept_)
 
-title = st.text_input("Movie title", 68)
+title = st.text_input("Movie title", )
 st.write("The current movie title is", title)
 
 new_student = np.array([[4.5, int(title)]])
