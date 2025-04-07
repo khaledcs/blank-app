@@ -68,12 +68,15 @@ st.write(log_reg.coef_)
 st.write("Intercept:" )
 st.write(log_reg.intercept_)
 
-title = st.text_input("Movie title", )
-st.write("The current movie title is", title)
+marks=0
+studytime=0
+marks = st.text_input("Enter Marks", )
 
-new_student = np.array([[4.5, int(title)]])
+studytime = st.text_input("Study Time", )
 
-if title!='':
+new_student = np.array([[double(studytime), int(marks)]])
+
+if marks>0:
     pred_standard = log_reg.predict(new_student)
     st.write("\nStandard Logistic Regression Prediction:", "Pass" if pred_standard[0] == 1 else "Fail")
 
