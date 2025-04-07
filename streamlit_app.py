@@ -57,6 +57,9 @@ df = pd.DataFrame(data)
 X = df[['StudyHours', 'ExamScore']]
 y = df['PassedTarget']
 
+log_reg_l2 = LogisticRegressionCV(penalty='l2', cv=3)  # L2 regularization with cross-validation
+log_reg_l2.fit(X, y)
+
 log_reg = LogisticRegression()
 log_reg.fit(X, y)
 
