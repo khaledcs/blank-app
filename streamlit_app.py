@@ -47,22 +47,6 @@ st.map(filtered_data)
 
 
 st.title('My Dev')
-#Using random see 42 for reproducibility
-np.random.seed(42)
-mean=170
-standard_deviation=10
-minimum_value=140
-maximum_value=220
-nubmer_of_sample_individual=50
-random_sample = np.random.normal(mean, standard_deviation, nubmer_of_sample_individual)
-final_sample = random_sample[(random_sample >= minimum_value) & (random_sample <= maximum_value)]
-
-final_sample= final_sample[:nubmer_of_sample_individual].tolist()
-st.subheader('No of Sample: %s:00' %len(final_sample))
-st.subheader ('\nSample Data: %s:00' %final_sample)
-
-
-
 data = {
     'StudyHours': [1, 2, 3, 4, 5, 6],
     'ExamScore': [50, 55, 60, 65, 70, 75],
@@ -81,7 +65,10 @@ st.write(log_reg.coef_)
 st.write("Intercept:" )
 st.write(log_reg.intercept_)
 
-new_student = np.array([[4.5, 68]])
+title = st.text_input("Movie title", "Life of Brian")
+st.write("The current movie title is", title)
+
+new_student = np.array([[4.5, title]])
 
 pred_standard = log_reg.predict(new_student)
 st.write("\nStandard Logistic Regression Prediction:", "Pass" if pred_standard[0] == 1 else "Fail")
