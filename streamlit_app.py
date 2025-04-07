@@ -73,9 +73,10 @@ st.write("The current movie title is", title)
 
 new_student = np.array([[4.5, int(title)]])
 
-pred_standard = log_reg.predict(new_student)
-st.write("\nStandard Logistic Regression Prediction:", "Pass" if pred_standard[0] == 1 else "Fail")
+if int(title)>0
+    pred_standard = log_reg.predict(new_student)
+    st.write("\nStandard Logistic Regression Prediction:", "Pass" if pred_standard[0] == 1 else "Fail")
 
-pred_l2 = log_reg_l2.predict(new_student)
-st.write("L2 Regularized Logistic Regression Prediction:", "Pass" if pred_l2[0] == 1 else "Fail")
+    pred_l2 = log_reg_l2.predict(new_student)
+    st.write("L2 Regularized Logistic Regression Prediction:", "Pass" if pred_l2[0] == 1 else "Fail")
 
