@@ -1,4 +1,57 @@
+import streamlit as st
+import pandas as pd
+import joblib
+
+# --------------------------
+# Load Trained Model and Feature List
+# --------------------------
+model = joblib.load('rf_model.pkl')
+model_features = joblib.load('model_features.pkl')
+
+st.title("Credit Record Approval Prediction")
+st.write("Fill in the values for the features below to predict if a record will be approved (Status 'C') or rejected.")
+
+# --------------------------
+# Generate Dynamic Input Fields for each Feature
+# --------------------------
+st.write("### Enter Feature Values")
+# Create a dictionary to collect user inputs.
+# The default value is set to "0"; you may want to customize according to the expected range or type.
+user_input = {}
+for feature in model_features:
+    user_input[feature] = st.text_input(f"{feature}", value="0")
+
+# Convert user inputs into a DataFrame.
+input_df = pd.DataFrame([user_input])
+
+# Try to convert user inputs to numeric types (if applicable)
+for col in input_df.columns:
+    try:
+        input_df[col] = pd.to_numeric(input_df[col])
+    except ValueError:
+        pass  # leave as is if cannot convert
+
+# --------------------------
+# Prediction Button
+# --------------------------
+if st.button("Predict"):
+    # Ensure the input DataFrame has the exact same columns as the model training set.
+    # This fills in missing features with 0.
+    input_df = input_df.reindex(columns=model_features, fill_value=0)
+
+    # Make prediction using the trained model
+    prediction = model.predict(input_df)
+
+    # Display prediction result
+    if prediction[0] == 1:
+        st.success("Prediction: Approved")
+    else:
+        st.error("Prediction: Rejected")
+
+
+
 '''
+
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -106,7 +159,7 @@ sleep(5)
 
 if st.button(f"Copy to Clipboard"):
     copy_to_clipboard(some_text)
-'''
+
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -183,3 +236,4 @@ if uploaded_file is not None:
         joblib.dump(X_processed.columns, 'model_features.pkl')
 
         print("Model and feature list saved.")
+'''
