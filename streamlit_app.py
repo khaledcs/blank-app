@@ -1,7 +1,130 @@
 import streamlit as st
 import pandas as pd
+import numpy as np
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
 import joblib
 
+# Define sidebar navigation
+st.sidebar.title("Navigation")
+page = st.sidebar.selectbox("Choose a page", ("Train Model", "Check Prediction"))
+
+# ----------------------
+# TRAIN MODEL PAGE
+# ----------------------
+if page == "Train Model":
+    
+    # File uploader to accept the training data CSV.
+    uploaded_file = st.file_uploader("Choose a training CSV file", type="csv")
+
+    if uploaded_file is not None:
+        app_df = pd.read_csv(uploaded_file)
+        st.write("Data preview:")
+        st.dataframe(app_df.head())
+    
+        uploaded_file1 = st.file_uploader("Choose 2 a training CSV file", type="csv")
+    
+        if uploaded_file1 is not None:
+            credit_df = pd.read_csv(uploaded_file1)
+            st.write("Data preview:")
+            st.dataframe(credit_df.head())
+    
+            #app_df = pd.read_csv('application_record.csv')
+            #credit_df = pd.read_csv('credit_record.csv')
+    
+            # Merge datasets on the common column "ID"
+            merged_df = pd.merge(app_df, credit_df, on="ID", how="inner")
+    
+            # --------------------------
+            # STEP 2: Create Binary Target Variable
+            # --------------------------
+            # The "Status" column comes from credit_df.
+            # Create a binary target where "C" means approved (1) and any other value means rejected (0).
+            merged_df['Target'] = np.where(merged_df['STATUS'] == 'C', 1, 0)
+    
+            # --------------------------
+            # STEP 3: Prepare Features and Labels
+            # --------------------------
+            # Here we drop the original Status and target columns from the predictors.
+            # You can adjust the list of columns to drop as needed.
+            X = merged_df.drop(columns=['ID', 'STATUS', 'Target'])
+            y = merged_df['Target']
+    
+            # --------------------------
+            # STEP 4: Preprocess Data
+            # --------------------------
+            # For simplicity, use one-hot encoding on categorical predictors.
+            X_processed = pd.get_dummies(X)
+    
+            # --------------------------
+            # STEP 5: Train/Test Split and Model Training
+            # --------------------------
+            X_train, X_test, y_train, y_test = train_test_split(X_processed, y, test_size=0.2, random_state=42)
+    
+            # Initialize and fit the Random Forest classifier
+            model = RandomForestClassifier(random_state=42)
+            model.fit(X_train, y_train)
+    
+            # Evaluate on test data
+            y_pred = model.predict(X_test)
+            accuracy = accuracy_score(y_test, y_pred)
+            print("Test Accuracy:", accuracy)
+    
+            # --------------------------
+            # STEP 6: Save the Model and Feature List
+            # --------------------------
+            # Saving the trained model and the feature columns is important so that the Streamlit app
+            # can build input forms that match the training data.
+            joblib.dump(model, 'rf_model.pkl')
+            joblib.dump(X_processed.columns, 'model_features.pkl')
+    
+            print("Model and feature list saved.")
+
+
+
+# ----------------------
+# CHECK PREDICTION PAGE
+# ----------------------
+elif page == "Check Prediction":
+    st.title("Prediction Check")
+    st.write("Enter the feature values below to predict approval (Status 'C') or rejection.")
+
+    # Try to load the trained model and feature names.
+    try:
+        model = joblib.load("rf_model.pkl")
+        model_features = joblib.load("model_features.pkl")
+    except Exception as e:
+        st.error("Error: Model not found. Please train the model first on the 'Train Model' page.")
+        st.stop()
+
+    st.write("### Input the feature values")
+    # Create a dictionary that will store the user input for each feature.
+    user_input = {}
+    # Loop through each expected feature and create an input widget.
+    # For this simple example, we use text_input; in practice you might adjust input types.
+    for feature in model_features:
+        user_input[feature] = st.text_input(f"{feature}", value="0")
+    
+    # Prepare the user input for prediction.
+    input_df = pd.DataFrame([user_input])
+    # Convert appropriate values to numeric types.
+    for col in input_df.columns:
+        try:
+            input_df[col] = pd.to_numeric(input_df[col])
+        except ValueError:
+            pass  # leave it if not convertible
+
+    if st.button("Predict"):
+        # Make sure the input DataFrame exactly matches the model features, filling missing columns with 0.
+        input_df = input_df.reindex(columns=model_features, fill_value=0)
+        prediction = model.predict(input_df)
+        
+        if prediction[0] == 1:
+            st.success("Prediction: Approved")
+        else:
+            st.error("Prediction: Rejected")
+'''
 # --------------------------
 # Load Trained Model and Feature List
 # --------------------------
@@ -50,7 +173,7 @@ if st.button("Predict"):
 
 
 
-'''
+
 
 import streamlit as st
 import pandas as pd
