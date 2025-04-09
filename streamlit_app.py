@@ -1,3 +1,4 @@
+'''
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -105,3 +106,80 @@ sleep(5)
 
 if st.button(f"Copy to Clipboard"):
     copy_to_clipboard(some_text)
+'''
+import streamlit as st
+import pandas as pd
+import numpy as np
+
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+import joblib
+
+st.title("Upload Training File and Retrain Model")
+
+# File uploader to accept the training data CSV.
+uploaded_file = st.file_uploader("Choose a training CSV file", type="csv")
+
+if uploaded_file is not None:
+    app_df = pd.read_csv(uploaded_file)
+    st.write("Data preview:")
+    st.dataframe(app_df.head())
+
+    uploaded_file1 = st.file_uploader("Choose 2 a training CSV file", type="csv")
+
+    if uploaded_file1 is not None:
+        credit_df = pd.read_csv(uploaded_file1)
+        st.write("Data preview:")
+        st.dataframe(credit_df.head())
+
+        #app_df = pd.read_csv('application_record.csv')
+        #credit_df = pd.read_csv('credit_record.csv')
+
+        # Merge datasets on the common column "ID"
+        merged_df = pd.merge(app_df, credit_df, on="ID", how="inner")
+
+        # --------------------------
+        # STEP 2: Create Binary Target Variable
+        # --------------------------
+        # The "Status" column comes from credit_df.
+        # Create a binary target where "C" means approved (1) and any other value means rejected (0).
+        merged_df['Target'] = np.where(merged_df['STATUS'] == 'C', 1, 0)
+
+        # --------------------------
+        # STEP 3: Prepare Features and Labels
+        # --------------------------
+        # Here we drop the original Status and target columns from the predictors.
+        # You can adjust the list of columns to drop as needed.
+        X = merged_df.drop(columns=['ID', 'STATUS', 'Target'])
+        y = merged_df['Target']
+
+        # --------------------------
+        # STEP 4: Preprocess Data
+        # --------------------------
+        # For simplicity, use one-hot encoding on categorical predictors.
+        X_processed = pd.get_dummies(X)
+
+        # --------------------------
+        # STEP 5: Train/Test Split and Model Training
+        # --------------------------
+        X_train, X_test, y_train, y_test = train_test_split(X_processed, y, test_size=0.2, random_state=42)
+
+        # Initialize and fit the Random Forest classifier
+        model = RandomForestClassifier(random_state=42)
+        model.fit(X_train, y_train)
+
+        # Evaluate on test data
+        y_pred = model.predict(X_test)
+        accuracy = accuracy_score(y_test, y_pred)
+        print("Test Accuracy:", accuracy)
+
+        # --------------------------
+        # STEP 6: Save the Model and Feature List
+        # --------------------------
+        # Saving the trained model and the feature columns is important so that the Streamlit app
+        # can build input forms that match the training data.
+        joblib.dump(model, 'rf_model.pkl')
+        joblib.dump(X_processed.columns, 'model_features.pkl')
+
+        print("Model and feature list saved.")
